@@ -1,0 +1,29 @@
+containers:
+
+  build:
+    setup:
+    - !Alpine v3.3
+    - !Install [make, git, ca-certificates]
+    - !Text
+      /etc/apk/repositories: |
+        http://mirror.leaseweb.com/alpine/v3.3/main/
+        http://mirror.leaseweb.com/alpine/v3.3/community/
+    - !Sh apk update
+    - !Install [go]
+    - !EnsureDir /gopath/src/github.com/tailhook
+    - !EnsureDir /gopath/pkg
+    - !Sh ln -s /work /gopath/src/github.com/tailhook/cantal-go
+    volumes:
+      /gopath/pkg: !Tmpfs
+    environ:
+      GOPATH: /gopath
+      GOBIN: /work/bin
+
+commands:
+
+  example: !Command
+    container: build
+    work-dir: examples
+    run: [go, install, counters.go]
+
+
