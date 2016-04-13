@@ -2,6 +2,7 @@ package cantal
 
 import "sync/atomic"
 import "unsafe"
+import "fmt"
 
 
 type Integer struct {
@@ -43,4 +44,8 @@ func (self*Integer) GetName() *map[string]string {
 
 func (self*Integer) set_pointer(ptr unsafe.Pointer) {
     self.value = (*int64)(ptr)
+}
+
+func (self*Integer) Format(f fmt.State, c rune) {
+    fmt.Fprintf(f, "%d", *self.value)
 }
