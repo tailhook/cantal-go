@@ -1,5 +1,7 @@
 package cantal
 
+import "sync/atomic"
+
 
 type Counter struct {
     name map[string]string
@@ -21,6 +23,10 @@ func (*Counter) GetSize() int {
 
 func (*Counter) GetType() string {
     return "counter"
+}
+
+func (self*Counter) Incr() {
+    atomic.AddUint64(self.value, 1)
 }
 
 func (self*Counter) GetName() *map[string]string {
