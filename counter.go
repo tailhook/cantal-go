@@ -27,6 +27,10 @@ func (*Counter) GetType() string {
     return "counter"
 }
 
+func (self*Counter) Get() uint64 {
+    return *self.value
+}
+
 func (self*Counter) Incr() {
     atomic.AddUint64(self.value, 1)
 }

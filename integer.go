@@ -27,6 +27,10 @@ func (*Integer) GetType() string {
     return "counter"
 }
 
+func (self*Integer) Get() int64 {
+    return *self.value
+}
+
 func (self*Integer) Set(value int64) {
     // This isn't strictly needed, at least for x86_64
     // But we think it makes code more clear
