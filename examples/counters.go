@@ -8,5 +8,6 @@ var counter = cantal.NewCounter(map[string]string{
 
 func main() {
     cantal.Start()
+    defer cantal.Clean()
     fmt.Println("hello world")
 }
