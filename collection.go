@@ -5,10 +5,14 @@ import "fmt"
 import "os"
 import "log"
 import "encoding/json"
+import "syscall"
+import "unsafe"
+import "reflect"
 
 var active_counters = []*Value{}
 var meta_path = ""
 var data_path = ""
+var mmap []byte = nil
 
 func add_value(value Value) {
     active_counters = append(active_counters, &value)
@@ -58,9 +62,25 @@ func Start() {
         log.Panicf("Can't delete file %s: %s", metapath, err);
     }
 
-    // TODO(tailhook) write data
-
     file, err := os.Create(tmppath)
+    slice := make([]byte, offset)
+    _, err = file.Write(slice)
+    if err != nil {
+        log.Panicf("Can't write cantal data: %s", err);
+    }
+    mbytes, err := syscall.Mmap(int(file.Fd()),
+        0, offset, syscall.PROT_WRITE, syscall.MAP_SHARED)
+    if err != nil {
+        log.Panicf("Can't memory map data: %s", err);
+    }
+    mmap = mbytes
+    file.Close();
+    err = os.Rename(tmppath, path)
+    if err != nil { log.Panicf("Can't rename cantal data: %s", err); }
+    data_path = path
+
+    // TODO(tailhook) close file on panic?
+    file, err = os.Create(tmppath)
     if err != nil { log.Panicf("Can't open cantal file: %s", err); }
     _, err = scheme.WriteTo(file)
     if err != nil { log.Panicf("Can't write cantal metadata: %s", err); }
@@ -68,12 +88,29 @@ func Start() {
 
     err = os.Rename(tmppath, metapath)
     if err != nil { log.Panicf("Can't rename cantal metadata: %s", err); }
-
     meta_path = metapath
-    data_path = path
+
+    head := (*reflect.SliceHeader)(unsafe.Pointer(&mmap))
+    ptr := head.Data
+    for _, cnt := range active_counters {
+        (*cnt).set_pointer(unsafe.Pointer(ptr))
+        ptr = ptr + uintptr((*cnt).GetSize())
+    }
 }
 
 func Clean() {
-    os.Remove(data_path)
-    os.Remove(meta_path)
+    if data_path != "" {
+        os.Remove(data_path)
+        data_path = ""
+    }
+    if meta_path != "" {
+        os.Remove(meta_path)
+        meta_path = ""
+    }
+    if mmap != nil {
+        head := (*reflect.SliceHeader)(unsafe.Pointer(&mmap))
+        syscall.Syscall(syscall.SYS_MUNMAP,
+            uintptr(head.Data), uintptr(len(mmap)), 0)
+        mmap = nil
+    }
 }

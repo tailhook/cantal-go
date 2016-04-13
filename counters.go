@@ -1,6 +1,7 @@
 package cantal
 
 import "sync/atomic"
+import "unsafe"
 
 
 type Counter struct {
@@ -9,7 +10,8 @@ type Counter struct {
 }
 
 func NewCounter(name map[string]string) *Counter {
-    counter := &Counter {
+    counter := new(Counter)
+    *counter = Counter {
         name: name,
         value: new(uint64), // will be replaced later
     }
@@ -31,4 +33,8 @@ func (self*Counter) Incr() {
 
 func (self*Counter) GetName() *map[string]string {
     return &self.name
+}
+
+func (self*Counter) set_pointer(ptr unsafe.Pointer) {
+    self.value = (*uint64)(ptr)
 }

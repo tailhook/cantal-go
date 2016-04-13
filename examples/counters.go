@@ -4,7 +4,7 @@ import "fmt"
 import "time"
 
 var counter = cantal.NewCounter(map[string]string{
-    "metric": "greetings_printed",
+    "metric": "dots_printed",
     })
 
 func main() {
@@ -14,6 +14,6 @@ func main() {
     for true {
         counter.Incr()
         time.Sleep(100*time.Millisecond)
-        fmt.Println("hello")
+        fmt.Print(".")
     }
 }
