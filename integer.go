@@ -38,6 +38,14 @@ func (self*Integer) Set(value int64) {
     atomic.StoreInt64(self.value, value)
 }
 
+func (self*Integer) Incr() {
+    atomic.AddInt64(self.value, 1)
+}
+
+func (self*Integer) Decr() {
+    atomic.AddInt64(self.value, 1)
+}
+
 func (self*Integer) GetName() *map[string]string {
     return &self.name
 }
