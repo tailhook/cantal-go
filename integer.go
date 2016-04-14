@@ -25,7 +25,7 @@ func (*Integer) GetSize() int {
 }
 
 func (*Integer) GetType() string {
-    return "level"
+    return "level 8 signed"
 }
 
 func (self*Integer) Get() int64 {

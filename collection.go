@@ -22,12 +22,11 @@ func Start() {
     offset := 0
     scheme := bytes.Buffer{}
     for _, cnt := range active_counters {
-        size := (*cnt).GetSize()
-        offset += size
+        offset += (*cnt).GetSize()
         typ := (*cnt).GetType()
         json, err := json.Marshal((*cnt).GetName())
         if err != nil { log.Panicf("Can't marshal counter name: %s", err); }
-        fmt.Fprintf(&scheme, "%s %d: %s\n", typ, size, json)
+        fmt.Fprintf(&scheme, "%s: %s\n", typ, json)
     }
     basepath := os.Getenv("CANTAL_PATH")
     if basepath == "" {

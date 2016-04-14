@@ -25,7 +25,7 @@ func (*Counter) GetSize() int {
 }
 
 func (*Counter) GetType() string {
-    return "counter"
+    return "counter 8"
 }
 
 func (self*Counter) Get() uint64 {
