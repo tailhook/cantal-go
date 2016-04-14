@@ -14,9 +14,9 @@ func Summary(out io.Writer) error {
         metric := (*name)["metric"]
         if metric != "" {
             if group != "" {
-                _, err = fmt.Printf("%s.%s: %v\n", group, metric, *item)
+                _, err = fmt.Fprintf(out, "%s.%s: %v\n", group, metric, *item)
             } else if state != "" {
-                _, err = fmt.Printf("%s.%s: %v\n", state, metric, *item)
+                _, err = fmt.Fprintf(out, "%s.%s: %v\n", state, metric, *item)
             }
             if err != nil {
                 return err
