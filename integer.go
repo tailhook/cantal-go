@@ -25,7 +25,7 @@ func (*Integer) GetSize() int {
 }
 
 func (*Integer) GetType() string {
-    return "counter"
+    return "level"
 }
 
 func (self*Integer) Get() int64 {
