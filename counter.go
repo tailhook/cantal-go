@@ -36,6 +36,10 @@ func (self*Counter) Incr() {
     atomic.AddUint64(self.value, 1)
 }
 
+func (self*Counter) Add(amount uint64) {
+    atomic.AddUint64(self.value, amount)
+}
+
 func (self*Counter) GetName() *map[string]string {
     return &self.name
 }

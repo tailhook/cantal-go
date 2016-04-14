@@ -42,8 +42,16 @@ func (self*Integer) Incr() {
     atomic.AddInt64(self.value, 1)
 }
 
+func (self*Integer) Add(amount int64) {
+    atomic.AddInt64(self.value, amount)
+}
+
 func (self*Integer) Decr() {
-    atomic.AddInt64(self.value, 1)
+    atomic.AddInt64(self.value, -1)
+}
+
+func (self*Integer) Sub(amount int64) {
+    atomic.AddInt64(self.value, -amount)
 }
 
 func (self*Integer) GetName() *map[string]string {
