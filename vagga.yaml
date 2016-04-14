@@ -25,5 +25,6 @@ commands:
     container: build
     work-dir: examples
     run: [go, install, counters.go]
+    epilog: Example is put in ./bin/counters
 
 
